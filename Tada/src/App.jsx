@@ -24,21 +24,39 @@ function App() {
   };
   useEffect(()=>{
     let savedTodo = JSON.parse(localStorage.getItem("todolist"));
+    let savedCompletedTodo = JSON.parse(localStorage.getItem("completedTodos"));
     if(savedTodo){
       setTodos(savedTodo);
+    }
+    if (savedCompletedTodo){
+      setCompletedTodos(savedCompletedTodo);
     }
   },[]);
   const handleDel = (index) =>{
     let reducedTodo = [...allTodos];
-    reducedTodo.splice(index);
+    reducedTodo.splice(index,1);
    
     localStorage.setItem("todolist",JSON.stringify(reducedTodo));
-     setTodos(reducedTodo);
+    setTodos(reducedTodo);
+    
+
+
+  
+  };
+  const handleCompDel = (index) =>{
+    let reducedTodo = [...completedTodos];
+    reducedTodo.splice(index,1);
+   
+    localStorage.setItem("completedTodos",JSON.stringify(reducedTodo));
+    setCompletedTodos(reducedTodo);
+    
+
+
   
   };
   const handleCompl = (index) =>{
     let now = new Date();
-    let dd= now.getDay();
+    let dd= now.getDate();
     let mm= now.getMonth();
     let yyyy= now.getFullYear();
     let h= now.getHours();
@@ -52,8 +70,10 @@ function App() {
     }  
     let updatedCompletedArr =[...completedTodos]
     updatedCompletedArr.push(filteredItem);
-    setCompletedTodos(updatedCompletedArr)
-    handleDel(index)
+    setCompletedTodos(updatedCompletedArr);
+    handleDel(index);
+    localStorage.setItem("completedTodos",JSON.stringify(updatedCompletedArr));
+
   }
   return (
   <div className='App'>
@@ -62,13 +82,13 @@ function App() {
 <div className='todo-wrapper'>
   <div className='todo-input'>
   <div className='todo-input-item'>
-    <label>Title</label>
-    <input type='text' value={newTitle} onChange={(e)=>setNewTitle (e.target.value)} placeholder="What's the task title"/>
+    <label></label>
+    <input type='text' value={newTitle} onChange={(e)=>setNewTitle (e.target.value)} placeholder="What's the task"/>
 
   </div>
   <div className='todo-input-item'>
-    <label>Description</label>
-    <input type='text' value={newDescription} onChange={(e)=>setNewDescription(e.target.value)} placeholder="What's the task description?"/>
+    <label></label>
+    <input type='text' value={newDescription} onChange={(e)=>setNewDescription(e.target.value)} placeholder="Describe your task"/>
 
   </div>
   <div className='todo-input-item'>
@@ -83,7 +103,9 @@ function App() {
     {isCompleteScreen===false && allTodos.map((item,index)=>{
       return(
         <div className='todo-list-item' key={index}>
-      <div>
+      <div> 
+        <h3>YAAYYYY!!!</h3>
+        
       <h3>{item.title}</h3>
       <p>{item.description}</p>
     </div>
@@ -105,7 +127,7 @@ function App() {
       <p><i>completed On: {item.completedOn}</i></p>
     </div>
     <div >
-      < MdDelete className='Del-icon' onClick={()=>handleDel(index)} title='delete?' />
+      < MdDelete className='Del-icon' onClick={()=>handleCompDel(index)} title='delete?' />
      
 
     </div>
